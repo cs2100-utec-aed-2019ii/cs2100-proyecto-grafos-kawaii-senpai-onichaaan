@@ -1,0 +1,5 @@
+﻿  Grafos.cpp
+c:\users\jose ignacio\desktop\order\code\c++\opengl\grafos\grafos\opengl_react.h(117): warning C4244: 'argumento': conversión de 'manager::time' a 'unsigned int'; posible pérdida de datos
+c:\users\jose ignacio\desktop\order\code\c++\opengl\grafos\grafos\opengl_react.h(124): warning C4244: 'argumento': conversión de 'manager::numeric' a 'int'; posible pérdida de datos
+c:\users\jose ignacio\desktop\order\code\c++\opengl\grafos\grafos\opengl_react.h(132): warning C4244: 'argumento': conversión de 'manager::time' a 'unsigned int'; posible pérdida de datos
+  Grafos.vcxproj -> C:\Users\Jose Ignacio\Desktop\order\code\c++\openGL\Grafos\Debug\Grafos.exe
