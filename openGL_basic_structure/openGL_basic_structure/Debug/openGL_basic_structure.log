@@ -1,0 +1,39 @@
+﻿  openGL_basic_structure.cpp
+c:\users\jose ignacio\desktop\order\code\c++\opengl\opengl_basic_structure\opengl_basic_structure\opengl_react.h(124): warning C4244: 'argumento': conversión de 'manager::time' a 'unsigned int'; posible pérdida de datos
+c:\users\jose ignacio\desktop\order\code\c++\opengl\opengl_basic_structure\opengl_basic_structure\opengl_react.h(131): warning C4244: 'argumento': conversión de 'manager::numeric' a 'int'; posible pérdida de datos
+c:\users\jose ignacio\desktop\order\code\c++\opengl\opengl_basic_structure\opengl_basic_structure\opengl_react.h(139): warning C4244: 'argumento': conversión de 'manager::time' a 'unsigned int'; posible pérdida de datos
+c:\users\jose ignacio\desktop\order\code\c++\opengl\opengl_basic_structure\opengl_basic_structure\opengl_basic_structure.cpp(31): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+c:\users\jose ignacio\desktop\order\code\c++\opengl\opengl_basic_structure\opengl_basic_structure\opengl_basic_structure.cpp(41): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\memory(1801): warning C4244: 'argumento': conversión de '_Ty' a 'float'; posible pérdida de datos
+          with
+          [
+              _Ty=int
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\memory(1865): note: vea la referencia a la creación de instancias de plantilla de función 'std::_Ref_count_obj<_Ty>::_Ref_count_obj<basic::dot,basic::dot,basic::dot,int,int>(basic::dot &&,basic::dot &&,basic::dot &&,int &&,int &&)' que se está compilando
+          with
+          [
+              _Ty=basic::body
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\memory(1866): note: vea la referencia a la creación de instancias de plantilla de función 'std::_Ref_count_obj<_Ty>::_Ref_count_obj<basic::dot,basic::dot,basic::dot,int,int>(basic::dot &&,basic::dot &&,basic::dot &&,int &&,int &&)' que se está compilando
+          with
+          [
+              _Ty=basic::body
+          ]
+  c:\users\jose ignacio\desktop\order\code\c++\opengl\opengl_basic_structure\opengl_basic_structure\opengl_basic_structure.cpp(35): note: vea la referencia a la creación de instancias de plantilla de función 'std::shared_ptr<basic::body> std::make_shared<basic::body,basic::dot,basic::dot,basic::dot,int,int>(basic::dot &&,basic::dot &&,basic::dot &&,int &&,int &&)' que se está compilando
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\memory(1801): warning C4244: 'argumento': conversión de '_Ty' a 'float'; posible pérdida de datos
+          with
+          [
+              _Ty=double
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\memory(1865): note: vea la referencia a la creación de instancias de plantilla de función 'std::_Ref_count_obj<_Ty>::_Ref_count_obj<basic::dot,basic::dot,basic::dot,double,int,std::shared_ptr<basic::body>,int,double>(basic::dot &&,basic::dot &&,basic::dot &&,double &&,int &&,std::shared_ptr<basic::body> &&,int &&,double &&)' que se está compilando
+          with
+          [
+              _Ty=basic::satelite
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\memory(1866): note: vea la referencia a la creación de instancias de plantilla de función 'std::_Ref_count_obj<_Ty>::_Ref_count_obj<basic::dot,basic::dot,basic::dot,double,int,std::shared_ptr<basic::body>,int,double>(basic::dot &&,basic::dot &&,basic::dot &&,double &&,int &&,std::shared_ptr<basic::body> &&,int &&,double &&)' que se está compilando
+          with
+          [
+              _Ty=basic::satelite
+          ]
+  c:\users\jose ignacio\desktop\order\code\c++\opengl\opengl_basic_structure\opengl_basic_structure\opengl_basic_structure.cpp(47): note: vea la referencia a la creación de instancias de plantilla de función 'std::shared_ptr<basic::satelite> std::make_shared<basic::satelite,basic::dot,basic::dot,basic::dot,double,int,std::shared_ptr<basic::body>,int,double>(basic::dot &&,basic::dot &&,basic::dot &&,double &&,int &&,std::shared_ptr<basic::body> &&,int &&,double &&)' que se está compilando
+  openGL_basic_structure.vcxproj -> C:\Users\Jose Ignacio\Desktop\order\code\c++\openGL\openGL_basic_structure\Debug\openGL_basic_structure.exe
