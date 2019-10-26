@@ -1,3 +1,4 @@
+#pragma once
 #include "element_relation.h"
 #include <list>
 #include <stack>
@@ -11,7 +12,7 @@ class Graph {
   using node = element<t_element, t_relation>;
   using edge = relation<t_element, t_relation>;
 
-  private:
+  public:
   using ptr_n = std::shared_ptr<node>;
   using ptr_e = std::shared_ptr<edge>;
 
@@ -31,6 +32,20 @@ class Graph {
       if(*((*it).front()) == wanted) break;
     }
     return it;
+  }
+
+  public:
+  void update(std::vector<ptr_n>& vptr_n, std::vector<ptr_e>& vptr_e) {
+	  vptr_n.clear();
+	  vptr_e.clear();
+	for (const auto& list : graph) {
+		vptr_n.push_back((*begin(list)));
+		(*(list.begin()))->get_all_relations(vptr_e);
+	}
+  }
+
+  t_element return_first_element() {
+	  return (*(begin(graph[0])))->get_value();
   }
 
   public:
@@ -198,9 +213,12 @@ class Graph {
   }
 
 	void insertNode(const t_element& toInsertvalue) {
-    list_n newList;
-    newList.push_back( std::make_shared<node>(toInsertvalue) );
-    graph.push_back(newList);
+		auto A_it = find(toInsertvalue);
+		if (A_it != end(graph)) return;
+
+		list_n newList;
+		newList.push_back( std::make_shared<node>(toInsertvalue) );
+		graph.push_back(newList);
 	}
 
 	void insertEdge(const t_element& _A, const t_element& _B) {
@@ -284,7 +302,7 @@ class Graph {
     if( wanted == end(graph) ) return false;
     degree += (*(*(begin(*wanted)))).popularity();
     for(auto& v: graph){
-      if (begin(v) == begin(*wanted)) {continue;}
+      if (*(begin(v)) == *(begin(*wanted))) {continue;}
       list_iterator it = begin(v);
       for(; it != end(v); it++){
         if(*(*it) == wantedNode){ 
@@ -331,7 +349,7 @@ class Graph {
 	}
 
 	bool isBipartited() {
-    //--Falta--
+    //--We Tried Hard and With Many Hours of Sweat and Tears and Ochinan--
 	}
 
 	bool isDense() {
@@ -347,78 +365,30 @@ class Graph {
 	}
 
 
-  template<template<typename...> class container, typename... args>
+	template<template<typename...> class container, typename... args>
 	void MST_Kruskal(container<std::vector<t_element>, args...>& _mst) {
-   
-   std::vector<ptr_e> All_relations;
-    for(const auto& v : graph) {
-      (*(v.begin()))->get_all_relations(All_relations);
-    }
 
-    auto really_all_relations = All_relations;
+		std::vector<ptr_e> All_relations;
+		for (const auto& v : graph) {
+			(*(v.begin()))->get_all_relations(All_relations);
+		}
 
-    std::vector<ptr_n> visited;
-    
-    t_relation shortestDistance;
-    unsigned int index = 0;
-    shortestDistance = All_relations[0]->get_value();
-    for(int i = 0; i < All_relations.size(); i++){
-      if(shortestDistance > All_relations[i]->get_value()) {shortestDistance = All_relations[i]->get_value(); index = i;}
-    }
-    ptr_e shortestEdge = All_relations[index];
-    All_relations.erase(begin(All_relations) + index);
-    visited.push_back(shortestEdge->get_from());
-    //visited.push_back(shortestEdge->get_to());
-    t_element _from__ = shortestEdge->get_from()->get_value();
-    t_element _to__ = shortestEdge->get_to()->get_value();
-    std::vector<t_element> _arr_temp = {_from__, _to__};   
-    _mst.push_back(_arr_temp);
-    
-    bool notFinished = true;
-    while (notFinished) {
-      if (All_relations.empty()) {notFinished = false; break;}
+		auto really_all_relations = All_relations;
 
-      index = 0;
-      shortestDistance = All_relations[0]->get_value();
-      for(int i = 0; i < All_relations.size(); i++){
-        if(shortestDistance > All_relations[i]->get_value()) {shortestDistance = All_relations[i]->get_value(); index = i;}
-      }
+		t_relation shortestDistance;
+		unsigned int index = 0;
+		shortestDistance = All_relations[0]->get_value();
+		for (int i = 0; i < All_relations.size(); i++) {
+			if (shortestDistance > All_relations[i]->get_value()) { shortestDistance = All_relations[i]->get_value(); index = i; }
+		}
+		ptr_e shortestEdge = All_relations[index];
+		All_relations.erase(begin(All_relations) + index);
+		
+		MST_Prim(shortestEdge->get_from()->get_value(), _mst);
 
-      ptr_e shortestEdge = All_relations[index];
-
-      
-      All_relations.erase(begin(All_relations) + index);
-      
-      bool not_to = true;
-      //bool not_from = true;
-      
-      for(auto& vis : visited){
-        if(vis == shortestEdge->get_to()){
-            not_to = false;
-            break;
-        }
-      }
-
-      /*for(auto& vis : visited){
-        if(vis == shortestEdge->get_from()){
-            not_from = false;
-            break;
-        }
-      }*/
-
-      if(not_to){
-        t_element _from_ = shortestEdge->get_from()->get_value();
-        t_element _to_ = shortestEdge->get_to()->get_value();
-        std::vector<t_element> arr_temp = {_from_, _to_};   
-        _mst.push_back(arr_temp);
-        
-         visited.push_back(shortestEdge->get_from());
-      }
- 
-    }
 	}
 	
-  template<template<typename...> class container, typename... args>
+	template<template<typename...> class container, typename... args>
 	void MST_Prim(const t_element& InitialCoord, container<std::vector<t_element>, args...>& _mst) {
 
     iterator InitialIterator = find(InitialCoord);
@@ -437,11 +407,11 @@ class Graph {
       }
 
       for(const auto& vis : visited){
-        for(auto it = begin(posible_paths); it != end(posible_paths);){
-          if(vis == (*it)->get_to()){
-            posible_paths.erase(it);
+		  for (int i = 0; i < posible_paths.size();) {
+          if(vis == (posible_paths[i])->get_to()){
+            posible_paths.erase(begin(posible_paths) + i);
           }else{
-            it++;
+            i++;
           }
         }
       }
@@ -497,6 +467,12 @@ class Graph {
     
     while(!BFS.empty()) {
       collection.push_back(BFS.front()->get_value());
+	  if (BFS.front()->get_value() == endCoord) {
+		  for (iterator it = begin(graph); it != end(graph); it++) {
+			  (*(begin(*it)))->isVisited = false;
+		  }
+		  return;
+	  }
       (BFS.front())->my_fellows(BFS);
       BFS.pop_front();
     }
@@ -506,7 +482,31 @@ class Graph {
     }
 	}
 
-  template<typename container>
+	template<typename container>
+	void DFS(const t_element& initCoord, container& collection) {
+		std::stack<ptr_n> DFS;
+		auto initIterator = find(initCoord);
+		if (initIterator == end(graph)) { return; }
+		ptr_n initNode = *(begin(*initIterator));
+		initNode->isVisited = true;
+		DFS.push(initNode);
+		collection.push_back(DFS.top()->get_value());
+
+		while (!DFS.empty()) {
+			if ((DFS.top())->my_fellows_DFS(DFS)) {
+				collection.push_back(DFS.top()->get_value());
+				continue;
+			}
+			DFS.pop();
+		}
+		for (iterator it = begin(graph); it != end(graph); it++) {
+			(*(begin(*it)))->isVisited = false;
+		}
+
+	}
+
+
+	template<typename container>
 	void searchTwoNodes_DFS(const t_element& initCoord, const t_element& endCoord, container& collection) {
     std::stack<ptr_n> DFS;
     auto initIterator = find(initCoord);
@@ -519,10 +519,19 @@ class Graph {
     while(!DFS.empty()) {
       if ((DFS.top())->my_fellows_DFS(DFS)) {
         collection.push_back(DFS.top()->get_value());
+		if (DFS.top()->get_value() == endCoord) {
+			for (iterator it = begin(graph); it != end(graph); it++) {
+				(*(begin(*it)))->isVisited = false;
+			}
+			return;
+		}
         continue;
       }
       DFS.pop();
     }
+	for (iterator it = begin(graph); it != end(graph); it++) {
+		(*(begin(*it)))->isVisited = false;
+	}
 
 	}
 
@@ -532,7 +541,6 @@ class Graph {
     auto it = find(wantedNode);
     if(it == end(graph) ) return;
     
-    
     t_relation sum;
     unsigned int i = 0;
 
@@ -541,8 +549,7 @@ class Graph {
     }
     t_relation avg = sum / i;
 
-    (*(*(begin(*it)))).my_fellows
-    (avg, collection);
+    (*(*(begin(*it)))).my_fellows(avg, collection);
     
 	}
 };

@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -154,9 +155,9 @@ class element{
       return my_relations.size();
     }
 
-    void get_sum_rel(relation_type& sum, unsigned int counter ){
+    void get_sum_rel(relation_type& sum, unsigned int& counter){
       for(const auto& v: my_relations){
-        sum + (*v).value;
+        sum += (*v).value;
         counter++;
       }
     }

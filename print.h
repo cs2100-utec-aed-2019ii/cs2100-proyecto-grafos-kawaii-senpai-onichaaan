@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 //Library by José Ignacio Huby Ochoa

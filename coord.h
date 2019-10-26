@@ -1,6 +1,8 @@
+#pragma once
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <vector>
 /*
   Structs important characteristics:
     1.  operator ==
@@ -52,14 +54,18 @@ std::ostream& operator<<(std::ostream& os, const coord& crd)
 
 
 struct distance{
-  float value_;
+  float value_ = 0;
   distance() = default;
   distance(float _value) {
     value_=_value;
   } 
 
-  void operator+ (const distance& d){
-    value_ += d.value_;
+  void operator+= (const distance& d){
+	  value_ += d.value_;
+  }
+
+  void operator= (const distance& d) {
+	  value_ = d.value_;
   }
 
   distance operator/ (unsigned int _parts){
