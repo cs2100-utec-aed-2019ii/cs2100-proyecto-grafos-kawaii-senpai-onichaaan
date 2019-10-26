@@ -1,0 +1,14 @@
+# vtk DataFile Version 2.0
+grid description
+ASCII
+DATASET UNSTRUCTURED_GRID
+
+POINTS 4 float
+10 20
+20 30
+40 50
+50 60
+
+CELLS 2
+3 0 1 2
+3 2 3 0
