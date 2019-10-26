@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <cmath>
+#include <stack>
 #include "coord.h"
 
 //-----------------------
@@ -46,7 +47,7 @@ template<typename relation, bool in_space>
 struct relation_helper{
   void static 
   calculate_content(relation* r){
-    std::cout << "No especializa"<<std::endl;
+    std::cout << "Not specialized"<<std::endl;
   }
 };
 
@@ -66,6 +67,9 @@ class relation{
 
   template<typename _type, bool _bool>
   friend struct relation_helper;
+
+  template<typename element_t, typename relation_t>
+  friend struct element;
 
   private:
     using _r = relation<element_type, relation_type>;
@@ -96,10 +100,11 @@ public:
     to = _to;
     this->calculate_content();
   }
-  void print_relation() {
-    value.print();
+  relation_type get_value() {
+    return value;
   }
-
+  ptr_e get_to() {return to;}
+  ptr_e get_from() {return from;}
 
 };
 
@@ -119,21 +124,84 @@ class element{
   element_type value;
   std::vector<ptr_r> my_relations;
 
-public:
-  element(element_type value): value{value}{};
+  public:
+  bool isVisited = false;
 
-public:
-  void print_element() {
-    value.print();
-  }
-  void establish_new_relationship(ptr_r new_relationship){
 
-    my_relations.push_back(new_relationship);
+  public:
+    element(element_type value): value{value}{};
+    
 
-  }
+  public:
+    
+    void establish_new_relationship(ptr_r new_relationship) {
+      my_relations.push_back(new_relationship);
+    }
 
-bool operator== (const element_type& c){
-  return value == c;
-  }
+    bool operator== (const element_type& c){
+      return value == c;
+    }
 
+    void breakup_relationship(const element_type& c) {
+      typename std::vector<ptr_r>::iterator it = begin(my_relations);
+      for (; it != end(my_relations); it++) {
+        if ((*it)->to->value == c) {my_relations.erase(it); 
+        break;}
+      }
+    }
+
+    unsigned int popularity()const{
+      return my_relations.size();
+    }
+
+    void get_sum_rel(relation_type& sum, unsigned int counter ){
+      for(const auto& v: my_relations){
+        sum + (*v).value;
+        counter++;
+      }
+    }
+
+    template<typename container>
+    void my_fellows(const relation_type& avg, container& collection){
+      for(const auto& v: my_relations){
+        if((*v).value <= avg) collection.push_back((*v).to->value);
+      }
+    }
+
+    template<typename container>
+    void my_fellows(container& collection){
+      for(const auto& v: my_relations){
+        if ((*v).to->isVisited == false) {
+          collection.push_back((*v).to);
+          (*v).to->isVisited = true;
+        }
+      }
+    }
+
+    bool my_fellows_DFS(std::stack<ptr_e>& collection) {
+      for (const auto& v: my_relations) {
+        if ((*v).to->isVisited == false) {
+          collection.push((*v).to);
+          (*v).to->isVisited = true;
+          return true;
+        }
+      }
+      return false;
+    }
+
+    element_type get_value(){
+      return value;
+    }
+
+    std::string get_value_to_Output() {
+      std::string s;
+      s = s + std::to_string(value.x) + ' ' + std::to_string(value.y);
+      return s;
+    }
+
+    void get_all_relations(std::vector<ptr_r>& container){
+      for(int i = 0; i < my_relations.size(); i++) {
+        container.push_back(my_relations[i]);
+      }
+    }
 };
