@@ -4,20 +4,30 @@
 #include "order.h"
 #include "print.h"
 
-class fake_example_graph { //The graph must follow this structure
-	using edge = int;
-	using vortex = float; //fake types
-public:
-	using container_edge = std::vector<edge>;
-	using container_vortex = std::vector<vortex>;
-	using ptr_c_e = std::shared_ptr<container_edge>;
-	using ptr_c_v = std::shared_ptr<container_vortex>; //important alias
-public:
-	ptr_c_e edges = std::make_shared<container_edge>();
-	ptr_c_v vortexs = std::make_shared<container_vortex>(); //important pointers
-	//this pointers will replace the containers atributes
-	//example:		(*edges).push_back(...);
-};
+/*
+
+Check OpenGL_react_graph.h to check for keys
+Left Click -> Insert Node
+Right Click -> Delete Node
+Middle Click Down -> Select First Node and promt on cmd to check if node was selected or not
+Middle Click Up -> Select Second Node and promt on cmd to check if node was selected or not
+
+Keys:
+		1 -> BFS of all graph
+		2 -> DFS of all graph
+		3 -> Is Connected
+		4 -> Save Graph
+		5 -> is Dense
+		6 -> Prim of all graph
+		7 -> Kruskal of all graph
+		8 -> Degree of selected node
+		9 -> Neighborhood of selected node
+		0 -> Prim of the two seelcted nodes
+		q -> BFS from selected node 1 and selected node 2
+		w -> DFS from selected node 1 and selected node 2
+		e -> Insert nodes from two selected nodes
+
+*/
 
 int main(int argc, char* argv[]) {
 
@@ -25,7 +35,7 @@ int main(int argc, char* argv[]) {
 	using graph_g = graph_graphic<graph>;
 
 	order::section("Creation");
-	graph g1; //Test Small and Big Test
+	graph g1("binary_fire_symbolmesh_image.vtk"); //Test Small and Big Test
 	//Graph<coord, distance, false> g1("ToReadFile.vtk"); //Test Load From VTK
 	//Graph<coord, distance, false> g1(5, 3); //Test Random Constructor
 	//Graph<coord, distance, false> g1("OutputFile.vtk"); //Test Load From Backup
@@ -33,43 +43,20 @@ int main(int argc, char* argv[]) {
 
 	order::section("Insertion");
 	order::note("Multiple nodes and edges are inserted");
-
-	/* // --Small Test--
-	g1.insertNode(coord::create(10, 20));
-	g1.insertNode(coord::create(20, 30));
-	g1.insertEdge(coord::create(10,20), coord::create(20, 30));
-	g1.insertNode(coord::create(30, 40));
-	g1.insertNode(coord::create(40, 50));
-	g1.insertEdge(coord::create(10,20), coord::create(30, 40));
-	g1.insertEdge(coord::create(30,40), coord::create(40,50));
-	*/ // --Big Test---
-	g1.insertNode(coord::create(10, 20)); //--1
-	g1.insertNode(coord::create(20, 30)); //--2
-	g1.insertNode(coord::create(30, 40)); //--3
-	g1.insertNode(coord::create(40, 50)); //--4
-	g1.insertNode(coord::create(50, 60)); //--5
-	g1.insertNode(coord::create(60, 70)); //--6
-	g1.insertEdge(coord::create(10, 20), coord::create(20, 30));  //--1--2
-	g1.insertEdge(coord::create(10, 20), coord::create(30, 40));  //--1--3
-	g1.insertEdge(coord::create(20, 30), coord::create(40, 50));  //--2--4
-	g1.insertEdge(coord::create(20, 30), coord::create(50, 60));  //--2--5
-	g1.insertEdge(coord::create(30, 40), coord::create(50, 60));  //--3--5
-	g1.insertEdge(coord::create(40, 50), coord::create(50, 60));  //--4--5
-	g1.insertEdge(coord::create(40, 50), coord::create(60, 70));  //--4--6
-	g1.insertEdge(coord::create(50, 60), coord::create(60, 70));  //--5--6
-
+	/*
 	order::section("Printing");
 	order::note("Print all the nodes in adj_list by their relations");
 	std::vector<std::vector<coord>> adjL;
 	g1.get_Adj_list(adjL);
 	print(adjL);
-
+	
 	order::section("Delete");
 	order::note("A node is deleted");
 	g1.deleteNode(coord::create(20, 30));
 	g1.get_Adj_list(adjL);
 	print(adjL);
-
+	*/
+	/*
 	order::section("Degree");
 	order::note("A node degree");
 	print(g1.degreeOfANode(coord::create(40, 50)));
@@ -123,6 +110,7 @@ int main(int argc, char* argv[]) {
 	std::vector<std::vector<coord>> _MST;
 	g1.MST_Kruskal(_MST);
 	print(_MST);
+	*/
 
 	manager::universe.attach("my_graph_A", std::make_shared<graph_g>(&g1));
 	manager::set_camera(600, 600);

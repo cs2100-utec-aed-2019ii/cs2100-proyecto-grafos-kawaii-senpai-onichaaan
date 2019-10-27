@@ -25,6 +25,15 @@ class Graph {
   private:
   adj_list graph;
 
+  public:
+  bool bool_find(const t_element& wanted) {
+	iterator it;
+	for (it = begin(graph); it != end(graph); it++) {
+		if (*((*it).front()) == wanted) return true;
+	}
+	return false;
+  }
+
   private:
   iterator find(const t_element& wanted){
     iterator it;
@@ -392,6 +401,7 @@ class Graph {
 	void MST_Prim(const t_element& InitialCoord, container<std::vector<t_element>, args...>& _mst) {
 
     iterator InitialIterator = find(InitialCoord);
+	if (InitialIterator == end(graph)) return;
 
     ptr_n InitialNode = *(begin(*InitialIterator));
     
