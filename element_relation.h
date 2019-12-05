@@ -157,7 +157,7 @@ class element{
 
     void get_sum_rel(relation_type& sum, unsigned int& counter){
       for(const auto& v: my_relations){
-        sum += (*v).value;
+        sum + (*v).value;
         counter++;
       }
     }
@@ -194,6 +194,10 @@ class element{
       return value;
     }
 
+    element_type& get_value_access(){
+      return value;
+    }
+
     std::string get_value_to_Output() {
       std::string s;
       s = s + std::to_string(value.x) + ' ' + std::to_string(value.y);
@@ -204,5 +208,30 @@ class element{
       for(int i = 0; i < my_relations.size(); i++) {
         container.push_back(my_relations[i]);
       }
+    }
+
+	template <typename container>
+	void get_all_relations_to(container& collection) {
+		for (const auto& v : my_relations) {
+			collection.push_back((*v).to);
+		}
+	}
+
+	ptr_e best_friends_forever() {
+		if (my_relations.empty()) { return nullptr; }
+		ptr_r result = my_relations[0];
+		for (const auto& relation : my_relations) {
+			if (result->value > relation->value) { result = relation; }
+		}
+		return result->to;
+	}
+
+    ptr_e nemesis(void) {
+			if (my_relations.empty()) { return nullptr; }
+      ptr_r result = my_relations[0];
+      for (const auto& relation : my_relations){
+        if(result->value < relation->value) { result = relation; }
+      }
+      return result->to;
     }
 };

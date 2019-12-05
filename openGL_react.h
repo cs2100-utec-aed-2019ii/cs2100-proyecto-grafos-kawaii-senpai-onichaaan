@@ -94,16 +94,18 @@ private:
 	}
 
 	static GLvoid window_reshape(GLsizei width, GLsizei height) {
-		glViewport(0, 0, width, height);
-		glMatrixMode(GL_PROJECTION);
+		/*glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0.0f, limits.x, 0.0f, limits.y, 0.0f, limits.z);
-		glMatrixMode(GL_MODELVIEW);
-		//	gluLookAt(0,50, 100, 0,0,0, 0, 1, 0);
-
+		glOrtho(0.0f, width, 0.0f, height, 0.0f, 100);
+		glMatrixMode(GL_MODELVIEW);*/
+		//gluLookAt(0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
 	static GLvoid window_key(unsigned char key, int x, int y) {
+		universe.trigger("onKeyPressed", (void*) &key);
+	}
+
+	static GLvoid arrow_keys(int key, int x, int y) {
 		universe.trigger("onKeyPressed", (void*) &key);
 	}
 
@@ -132,6 +134,7 @@ public:
 		glutDisplayFunc(&window_display);
 		glutReshapeFunc(&window_reshape);
 		glutKeyboardFunc(&window_key);
+		glutSpecialFunc(arrow_keys);
 		glutTimerFunc(tick_cycle, &Timer, 1);
 		glutMouseFunc(&callback_mouse);
 		glutMainLoop();

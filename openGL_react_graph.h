@@ -2,6 +2,7 @@
 #include "openGL_react.h" //Also by J. Huby Ochoa
 #include "order.h"
 #include "print.h"
+#include <memory>
 
 //By José Ignacio Huby Ochoa
 // Lima, Perú
@@ -9,33 +10,54 @@
 
 template<typename graph>
 class graph_graphic : public observer{
+
 private:
+
 	using ptr_e = typename graph::ptr_e;
 	using ptr_n = typename graph::ptr_n;
+	using ptr_gg = std::shared_ptr<graph_graphic>;
+	using ptr_g = std::shared_ptr<graph>;
+
 private:
+
 	std::vector<ptr_e> edges;
 	std::vector<ptr_n> vortex;
-	graph* my_graph;
+	ptr_g my_graph;
+	ptr_gg path;
 	coord selectedCoord_1;
 	coord selectedCoord_2;
+	bool searchTwoNodes_Mode = false;
+	bool iterator_Mode = false;
+	typename graph::Iterator itr;
+	std::vector<coord> iterator_traversal;
+
 public:
+
 	graph_graphic(graph* g) : my_graph{g} {
 
 		my_graph->update(vortex, edges);
 
 		this->learn("draw_vortex", [this](void* args = nullptr) {
+			bool is_path = static_cast<bool>(args);
 			for (const auto& v : this->vortex) {
 				glPushMatrix();
 				glTranslatef(v->get_value().x, v->get_value().y , 0);
+				if (is_path) { glColor3f(0.0f, 0.0f, 1.0f); }
+				else { glColor3f(1.0f, 1.0f, 1.0f); }
 				glutSolidSphere(5, 10, 10);
 				glPopMatrix();
 			}
 		});
 		this->learn("draw_edges", [this](void* args = nullptr) {
+			bool is_path = static_cast<bool>(args);
 			for (const auto& e : this->edges) {
 				glPushMatrix();
 				glBegin(GL_LINES);
+				if (is_path) { glColor3f(0.0f, 0.0f, 1.0f); }
+				else { glColor3f(1.0f, 1.0f, 1.0f); }
 				glVertex3f(e->get_from()->get_value().x, e->get_from()->get_value().y , 0);
+				if (is_path) { glColor3f(0.0f, 0.0f, 1.0f); }
+				else { glColor3f(1.0f, 1.0f, 1.0f); }
 				glVertex3f(e->get_to()->get_value().x, e->get_to()->get_value().y, 0);
 				glEnd();
 				glPopMatrix();
@@ -43,40 +65,77 @@ public:
 		});
 		this->learn("draw", [this](void* args = nullptr) {
 
-			this->apply("draw_vortex");
-			this->apply("draw_edges");
+			this->apply("draw_vortex", (void*) false);
+			this->apply("draw_edges", (void*) false);
+			if (path) {
+				path->apply("draw_vortex", (void*) true);
+				path->apply("draw_edges", (void*) true);
+			}
 
 		});
 		this->learn("onLeftClick", [this](void* args = nullptr) {
 			
-			coord* pts = (coord*)args;
-			my_graph->insertNode(*pts);
-			my_graph->update(vortex, edges);
+			if (searchTwoNodes_Mode) {
+				coord* pts = (coord*)args;
+				if (my_graph->bool_find(*pts)) {
+					std::cout << "Found" << std::endl;
+					selectedCoord_1 = *pts;
+				}
+				else {
+					std::cout << "Not Found" << std::endl;
+				}
+				my_graph->update(vortex, edges);
+			}
+			else {
+				coord* pts = (coord*)args;
+				my_graph->insertNode(*pts);
+				my_graph->update(vortex, edges);
+			}
 
 		});
 		this->learn("onRightClick", [this](void* args = nullptr) {
 
-			coord* pts = (coord*)args;
-			my_graph->deleteNode(*pts);
-			my_graph->update(vortex, edges);
-			
+			if (searchTwoNodes_Mode) {
+				coord* pts = (coord*)args;
+				if (my_graph->bool_find(*pts)) { 
+					std::cout << "Found" << std::endl;
+					selectedCoord_2 = *pts;
+				}
+				else { 
+					std::cout << "Not Found" << std::endl;
+				}
+				my_graph->update(vortex, edges);
+			}
+			else {
+				coord* pts = (coord*)args;
+				my_graph->deleteNode(*pts);
+				my_graph->update(vortex, edges);
+			}	
 
 		});
 		this->learn("onMiddleDown", [this](void* args = nullptr) {
 
 			coord* pts = (coord*)args;
-			selectedCoord_1 = *pts;
-			if (my_graph->bool_find(*pts)) std::cout << "Found" << std::endl;
-			else { std::cout << "Not Found" << std::endl; }
+			if (my_graph->bool_find(*pts)) {
+				std::cout << "Found" << std::endl;
+				selectedCoord_1 = *pts;
+			}
+			else {
+				std::cout << "Not Found" << std::endl;
+			}
 			my_graph->update(vortex, edges);
 
 		});
 		this->learn("onMiddleUp", [this](void* args = nullptr) {
 
 			coord* pts = (coord*)args;
-			selectedCoord_2 = *pts;
-			if (my_graph->bool_find(*pts)) std::cout << "Found" << std::endl;
-			else { std::cout << "Not Found" << std::endl; }
+			if (my_graph->bool_find(*pts)) {
+				std::cout << "Found" << std::endl;
+				selectedCoord_2 = *pts;
+			}
+			else {
+				std::cout << "Not Found" << std::endl;
+			}
 			my_graph->update(vortex, edges);
 
 		});
@@ -87,6 +146,80 @@ public:
 			std::vector<coord> bfs;
 			unsigned char* key = (unsigned char*)args;
 			switch (*key) {
+			case 'i':
+				if (iterator_Mode) {
+					order::section("Iterator Mode - OFF");
+					iterator_Mode = false;
+					path = nullptr;
+					iterator_traversal.clear();
+				}
+				else {
+					order::section("Iterator Mode - ON");
+					iterator_Mode = true;
+					itr = my_graph->Begin();
+					iterator_traversal.push_back(*itr);
+					path = std::make_shared<graph_graphic>(new graph(iterator_traversal));
+				}
+				break;
+
+			case GLUT_KEY_RIGHT:
+				if (iterator_Mode) {
+					itr++;
+					iterator_traversal.push_back(*itr);
+					path = std::make_shared<graph_graphic>(new graph(iterator_traversal));
+				}
+				break;
+
+			case GLUT_KEY_LEFT:
+				if (iterator_Mode) {
+					itr--;
+					iterator_traversal.push_back(*itr);
+					path = std::make_shared<graph_graphic>(new graph(iterator_traversal));
+				}
+				break;
+
+			case 'n':
+				if (iterator_Mode) {
+					path = std::make_shared<graph_graphic>(new graph(itr.getNeighborhood()));
+					iterator_traversal.clear();
+				}
+				break;
+
+
+			case 's':
+				if (searchTwoNodes_Mode) {
+					order::section("Search Two Nodes Mode - OFF");
+					searchTwoNodes_Mode = false;
+					path = nullptr;
+				}
+				else {
+					order::section("Search Two Nodes Mode - ON");
+					searchTwoNodes_Mode = true;
+				}
+				break;
+				
+			case 'A':
+				if (searchTwoNodes_Mode) {
+					order::section("A Star");
+					print("Loading...");
+					my_graph->A_star(selectedCoord_1, selectedCoord_2, traversal);
+					path = std::make_shared<graph_graphic>(new graph(traversal));
+					print("Done Loading");
+					break;
+				}
+				else { break; }
+
+			case 'D':
+				if (searchTwoNodes_Mode) {
+					order::section("DisjkTra");
+					print("Loading...");
+					my_graph->Dijkstra(selectedCoord_1, selectedCoord_2, traversal);
+					path = std::make_shared<graph_graphic>(new graph(traversal));
+					print("Done Loading");
+					break;
+				}
+				else { break; }
+
 			case '1':
 				order::section("BFS of all graph");
 				print("Loading...");
@@ -137,12 +270,12 @@ public:
 				break;
 
 			case '7':
-				order::section("Kruskal");
-				order::note("Creating the Minimun Spanning Tree using Kruskal");
+				order::section("Dijkstra");
+				order::note("");
 				print("Loading...");
-				my_graph->MST_Kruskal(MST);
+				my_graph->Dijkstra(selectedCoord_1, selectedCoord_2, traversal);
 				print("Done Loading");
-				print(MST);
+				print(traversal);
 				break;
 
 			case '8':
@@ -189,6 +322,7 @@ public:
 
 			case 'e':
 				my_graph->insertEdge(selectedCoord_1, selectedCoord_2);
+				my_graph->update(vortex, edges);
 				break;
 			}
 		});
